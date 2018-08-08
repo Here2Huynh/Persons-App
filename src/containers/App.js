@@ -1,19 +1,60 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import classes from './App.css';
 // import Person from '../components/Persons/Person/Person';
 // import ErrorBoundary from '../ErrorBoundary/ErrorBoundary';
 import Persons from '../components/Persons/Persons';
 import Cockpit from '../components/Cockpit/Cockpit';
-class App extends Component {
-  state = {  
-    persons : [
-      { id: 'wfww', name: 'Manu', age: 29 },
-      { id: 'were', name: 'Max', age: 28 },
-      { id: 'werw', name: 'Stephanie', age: 26 }
-    ],
-    otherState: 'some other value',
-    showPersons: false
+
+class App extends PureComponent {
+  constructor(props) {
+    super(props);
+    console.log('[App.js] inside constructor', props);
+    this.state = {  
+      persons : [
+        { id: 'wfww', name: 'Manu', age: 29 },
+        { id: 'were', name: 'Max', age: 28 },
+        { id: 'werw', name: 'Stephanie', age: 26 }
+      ],
+      otherState: 'some other value',
+      showPersons: false
+    }
   }
+
+  componentWillMount() {
+    console.log('[App.js] inside componentWillMount()');
+  }
+
+  componentDidMount() {
+    console.log('[App.js] inside componentDidMount()');
+  }
+
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   console.log('[UPDATE App.js] inside shouldComponentUpdate', nextProps, nextState);
+  //   return nextState.persons !== this.state.persons ||
+  //         nextState.showPersons !== this.state.showPersons;
+  // }
+  // can save performance if used cleverly 
+  // made sure only update when there is realy change 
+
+  componentWillUpdate(nextProps, nextState) {
+    console.log('[UPDATE App.js] inside componentWillUpdate', nextProps, nextState);
+  }
+
+  componentDidUpdate() {
+    console.log('[UPDATE App.js] inside componentDidUpdate');
+  }
+
+
+  // this state init syntax is new 
+  // state = {  
+  //   persons : [
+  //     { id: 'wfww', name: 'Manu', age: 29 },
+  //     { id: 'were', name: 'Max', age: 28 },
+  //     { id: 'werw', name: 'Stephanie', age: 26 }
+  //   ],
+  //   otherState: 'some other value',
+  //   showPersons: false
+  // }
 
   deletePersonHandler = (personIndex) => {
     // always update state by immutable fashion
@@ -47,6 +88,8 @@ class App extends Component {
   }
 
   render() {
+
+    console.log('[App.js] inside render()');
     let persons = null; 
     
 
@@ -65,7 +108,9 @@ class App extends Component {
 
     return (
       <div className={classes.App}>
+      <button onClick={() => {this.setState({showPersons: true})}}>Show Persons</button>
           <Cockpit 
+            appTitle={this.props.title}
             showPersons={this.state.showPersons}
             persons={this.state.persons}
             clicked={this.togglePersonHandler}
@@ -88,3 +133,16 @@ export default App;
 
 // App.js for best practice is to hold all the components 
 
+// React best practice is to use the class based components as little as possible
+// because states can get hard to track, use functional components as much as possible
+
+// stateful components = containers 
+// class XY extends Component
+// access to state 
+// lifecycle hooks 
+// access state and props via "this" 
+// this.state.xy & this.props.xy 
+
+// stateless 
+// const xy = (props) => (...)
+// props.XY 
