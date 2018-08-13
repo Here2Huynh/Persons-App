@@ -4,7 +4,7 @@ import classes from './App.css';
 // import ErrorBoundary from '../ErrorBoundary/ErrorBoundary';
 import Persons from '../components/Persons/Persons';
 import Cockpit from '../components/Cockpit/Cockpit';
-import WithClass from '../hoc/WithClass';
+// import WithClass from '../hoc/WithClass';
 import Aux from '../hoc/Aux';
 import withClass from '../hoc/WithClass2';
 
@@ -15,11 +15,12 @@ class App extends PureComponent {
     this.state = {  
       persons : [
         { id: 'wfww', name: 'Manu', age: 29 },
-        { id: 'were', name: 'Max', age: 28 },
+        { id: 'were', name: 'Max', age: '28' },
         { id: 'werw', name: 'Stephanie', age: 26 }
       ],
       otherState: 'some other value',
-      showPersons: false
+      showPersons: false,
+      toggleClicked: 0
     }
   }
 
@@ -87,8 +88,16 @@ class App extends PureComponent {
 
   togglePersonHandler = () => {
     const doesShow = this.state.showPersons;
-    this.setState({ showPersons: !doesShow});
+    this.setState((prevState, props) => { 
+      return {
+        showPersons: !doesShow, 
+        toggleClicked: prevState.toggleClicked + 1
+      }
+    });
   }
+  // setState is a method ran asynchronously by React, 
+  // can rely on this.state being the most updated version
+  // prevState is a best practice if we rely on prev states
 
   render() {
 

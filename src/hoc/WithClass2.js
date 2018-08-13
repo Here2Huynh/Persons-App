@@ -11,17 +11,19 @@ import React, { Component } from 'react';
 
 // stateful component, there is not name after class
 const withClass2 = (WrapperComponent, className) => {
-    return class extends Component {
+    const WithClass = class extends Component {
         render() {
             return (
-                (props) => (
-                    <div className={className}>
-                        <WrapperComponent {...this.props} />  
-                    </div>
-                )
+                <div className={className}>
+                    <WrapperComponent ref={this.props.forwardedRef} {...this.props} />  
+                </div>
             )
         }
     }
+
+    return React.forwardRef( (props, ref) => {
+        return <WithClass {...props} forwardedRef={ref} /> 
+    });
 }
 
 export default withClass2; 
