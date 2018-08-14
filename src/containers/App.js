@@ -8,6 +8,8 @@ import Cockpit from '../components/Cockpit/Cockpit';
 import Aux from '../hoc/Aux';
 import withClass from '../hoc/WithClass2';
 
+export const AuthContext = React.createContext(false);
+
 class App extends PureComponent {
   constructor(props) {
     super(props);
@@ -15,12 +17,13 @@ class App extends PureComponent {
     this.state = {  
       persons : [
         { id: 'wfww', name: 'Manu', age: 29 },
-        { id: 'were', name: 'Max', age: '28' },
+        { id: 'were', name: 'Max', age: 28 },
         { id: 'werw', name: 'Stephanie', age: 26 }
       ],
       otherState: 'some other value',
       showPersons: false,
-      toggleClicked: 0
+      toggleClicked: 0,
+      authenticated: false
     }
   }
 
@@ -42,6 +45,23 @@ class App extends PureComponent {
 
   componentWillUpdate(nextProps, nextState) {
     console.log('[UPDATE App.js] inside componentWillUpdate', nextProps, nextState);
+  }
+
+  // in React 13, gives us the chance to update the state before render and mount happens 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    console.log(
+      '[UPDATE App.js] inside getDerivedStateFromProps', 
+      nextProps, 
+      prevState);
+
+      return prevState;
+  }
+
+  // React 13, give you a snapshot of the DOM right before it updates 
+  // use case: good place to save scrolling position of the user 
+  getSnapshotBeforeUpdate() {
+    console.log(
+      '[UPDATE App.js] inside getSnapshotBeforeUpdate');
   }
 
   componentDidUpdate() {
@@ -99,6 +119,10 @@ class App extends PureComponent {
   // can rely on this.state being the most updated version
   // prevState is a best practice if we rely on prev states
 
+  loginHandler = () => {
+    this.setState({authenticated: true})
+  }
+
   render() {
 
     console.log('[App.js] inside render()');
@@ -126,8 +150,11 @@ class App extends PureComponent {
             showPersons={this.state.showPersons}
             persons={this.state.persons}
             clicked={this.togglePersonHandler}
+            login={this.loginHandler}
           />
-          { persons }
+          <AuthContext.Provider value={this.state.authenticated}> 
+            { persons }
+          </AuthContext.Provider> 
       </Aux>
     );
     // return React.createElement('div', {className: 'App'}, React.createElement('h1', null, 'Does this work now?'));
@@ -157,3 +184,13 @@ export default withClass(App, classes.App);
 // stateless 
 // const xy = (props) => (...)
 // props.XY 
+
+
+// React 13 Context 
+// has a provider that provides the global data
+// has a consumer that consumes that global data 
+// address the issue of long chains of props 
+
+// React 13 life cycle hook updates
+// avoid using componentWillMount(), componentWillUpdate(), componentWillReceiveProps()
+// often used incorrectly, such as setState being called in it 
